@@ -1,10 +1,7 @@
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y \
-        libpq-dev \
-        unzip \
-        git \
-        curl \
+# Installer Nginx
+RUN apt-get update && apt-get install -y nginx libpq-dev unzip git curl \
     && docker-php-ext-install pdo_pgsql pgsql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -14,18 +11,25 @@ error_reporting=E_ALL" > /usr/local/etc/php/conf.d/docker-php-errors.ini
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /var/www/html
-
-COPY . /var/www/html
-
-
-FROM nginx:latest AS nginx
-
-COPY --from=php /var/www/html /var/www/html
+# Copier configuration nginx
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Copie PHP-FPM
-COPY --from=php /usr/local/etc /usr/local/etc
-COPY --from=php /usr/local/bin/php-fpm /usr/local/bin/php-fpm
+# Copier code source
+WORKDIR /var/www/html
+COPY . /var/www/html
 
-CMD php-fpm -D && nginx -g 'daemon off;'
+# Configurer permissions (optionnel)
+RUN chown -R www-data:www-data /var/www/html
+
+# Supprimer le demon de nginx au démarrage
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+
+# Lancer nginx et php-fpm via supervisord (pour lancer les deux processus)
+RUN apt-get install -y supervisor
+
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord", "-n"]
+
