@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile 
     expose:
       - "9000"
+    user: "${UID}:${GID}"
     container_name: php_app
     volumes:
       - ./:/var/www/html
@@ -16,7 +17,9 @@ services:
       - app-network
 
   nginx:
-    image: nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     container_name: nginx_web
     ports:
       - "80:80"

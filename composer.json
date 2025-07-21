@@ -2,8 +2,16 @@
     "name": "root/html",
     "autoload": {
         "psr-4": {
-            "AppDAF\\API\\": "src/"
+            "AppDAF\\API\\CORE\\": "app/core/",
+            "AppDAF\\API\\ABSTRACT\\": "app/core/abstract/",
+            "AppDAF\\API\\ENUM\\": "app/core/enum/",
+            "AppDAF\\API\\REPOSITORY\\": "src/repository/",
+            "AppDAF\\API\\CONTROLLER\\": "src/controller/",
+            "AppDAF\\API\\SERVICE\\": "src/service/",
+            "AppDAF\\API\\ENTITY\\": "src/entity/"
         }
     },
-    "require": {}
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
 }

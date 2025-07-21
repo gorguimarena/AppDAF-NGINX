@@ -1,0 +1,15 @@
+services:
+  DATABASE:
+    class: \PDO
+    arguments: 
+      - "%DSN%"
+      - "%DB_USER%"
+      - "%DB_PASSWORD%"
+
+  SESSION:
+    class: APP\CORE\Session
+    arguments: []
+
+  CITOYEN_REPOSITOTY:
+    class: MAXITSA\REPOSITORY\CompteRepository
+    arguments: []
