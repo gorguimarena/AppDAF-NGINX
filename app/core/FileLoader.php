@@ -12,39 +12,13 @@ class FileLoader
 
     public function __construct()
     {
-        $this->uploadDir = trim(Env::get('FILE_LOAD_IMAGES'), '/');
+        $this->uploadDir = trim("", '/');
 
         if (!is_dir($this->uploadDir)) {
             if (!mkdir($this->uploadDir, 0775, true)) {
                 throw new \Exception("Impossible de créer le dossier de destination.");
             }
         } 
-    }
-
-    public function saveUploadedImage(array $file): string
-    {
-        if (
-            !isset($file['tmp_name'], $file['name']) ||
-            !is_uploaded_file($file['tmp_name'])
-        ) {
-            throw new Exception("Fichier invalide.");
-        }
-
-        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-        if (!in_array($extension, $this->allowedExtensions)) {
-            throw new Exception("Extension de fichier non autorisée.");
-        }
-
-        $filename = uniqid('img_', true) . '.' . $extension;
-        $destination = $this->uploadDir . '/' . $filename;
-
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            throw new Exception("Erreur lors de l'enregistrement de l'image.");
-        }
-
-        return $filename;
     }
 
     public function getImagePath(string $fileName): string

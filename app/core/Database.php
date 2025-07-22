@@ -13,16 +13,10 @@ class Database extends Singleton {
                     PDO::ATTR_EMULATE_PREPARES => false
                 ];
 
-    public function __construct()
+    public function __construct(PDO $pdo)
     {
         try {
-            $dsn = Env::get('DRIVE').':host='.Env::get('DB_HOST').';port='.Env::get('DB_PORT').';dbname=' . Env::get('DB_NAME');
-            $this->pdo = new PDO(
-                $dsn,
-                Env::get('DB_USER'),
-                Env::get('DB_PASSWORD'),
-                self::$configDefault
-            );
+            $this->pdo = $pdo;
         } catch (\PDOException $e) {
             die('Erreur de connexion à la base de données : ' . $e->getMessage());
         }

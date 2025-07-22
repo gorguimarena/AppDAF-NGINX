@@ -33,6 +33,8 @@ COPY . .
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 
+RUN chown -R www-data:www-data /var/www/html
+
 # Exposer le port utilisé par Render
 EXPOSE 80
 

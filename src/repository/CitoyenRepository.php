@@ -1,6 +1,7 @@
 <?php
 namespace AppDAF\API\REPOSITORY;
 
+use APP\CORE\Database;
 use AppDAF\API\ENTITY\Citoyen;
 use AppDAF\API\ENTITY\Response;
 use AppDAF\API\ENTITY\Statut;
@@ -10,9 +11,9 @@ class CitoyenRepository
 {
     private PDO $pdo;
 
-    public function __construct()
+    public function __construct(Database $database)
     {
-        $this->pdo ;
+        $this->pdo = $database->getConnection();
     }
 
     public function select_by_cni(string $cni): ?Citoyen
