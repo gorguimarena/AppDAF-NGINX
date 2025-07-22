@@ -24,12 +24,13 @@ RUN composer install --no-dev --optimize-autoloader || true
 COPY . .
 
 # Remplacer la config nginx par celle modifiée (avec pid dans /tmp)
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 
 RUN chown -R www-data:www-data /var/www/html
+
+RUN mkdir -p /var/log/php-fpm && chown -R www-data:www-data /var/log/php-fpm
 
 EXPOSE 80
 
