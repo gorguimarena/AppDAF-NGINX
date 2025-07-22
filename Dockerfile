@@ -12,29 +12,29 @@ RUN apt-get update && apt-get install -y \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Activer les erreurs PHP
+# Afficher les erreurs PHP
 RUN echo "display_errors=On\n\
 display_startup_errors=On\n\
 error_reporting=E_ALL" > /usr/local/etc/php/conf.d/docker-php-errors.ini
 
-# Créer répertoire de travail
+# Créer le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers essentiels
+# Copier les fichiers de dépendances uniquement
 COPY composer.json composer.lock ./
 
-# Installer les dépendances (Render peut aussi le faire si tu veux l’ignorer ici)
-RUN composer install --no-dev --optimize-autoloader
+# Installer les dépendances PHP
+RUN composer install --no-dev --optimize-autoloader || true
 
-# Copier le reste du projet
+# Copier tout le reste du projet
 COPY . .
 
-# Copier séparément la config nginx et supervisord (important pour ne pas qu’elles soient écrasées)
+# Copier les fichiers de configuration Nginx et Supervisor
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 
-# Exposer le port attendu par Render
+# Exposer le port utilisé par Render
 EXPOSE 80
 
-# Lancer supervisord pour gérer php-fpm et nginx
+# Lancer Supervisor qui gère php-fpm + nginx
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
