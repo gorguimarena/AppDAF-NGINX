@@ -12,7 +12,7 @@ class Log extends AbstractEntity
     private string $ip;
 
     public static function toObject(array $data): static{
-        return static();
+        return new static();
     }
     public function toArray(): array{
         return [

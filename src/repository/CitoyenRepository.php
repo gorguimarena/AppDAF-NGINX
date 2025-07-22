@@ -10,23 +10,21 @@ class CitoyenRepository
 {
     private PDO $pdo;
 
-    public function __construct(PDO $pdo)
+    public function __construct()
     {
-        $this->pdo = $pdo;
+        $this->pdo ;
     }
 
-    public function select_by_cni(string $cni): Response
+    public function select_by_cni(string $cni): ?Citoyen
     {
         $stmt = $this->pdo->prepare("SELECT * FROM citoyen WHERE cni = :cni");
         $stmt->execute(['cni' => $cni]);
 
         $citoyen_row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($citoyen_row) {
-            $citoyen = new Citoyen();
-            
-            return new Response($citoyen, Statut::SUCCESS, 200, "Citoyen trouvé");
+            $citoyen = Citoyen::toObject($citoyen_row);
+            return $citoyen;
         }
-
-        return new Response(null, Statut::ERROR, 404, "Aucun citoyen trouvé");
+        return null;
     }
 }
