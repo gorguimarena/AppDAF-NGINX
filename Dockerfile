@@ -1,6 +1,5 @@
 FROM php:8.2-fpm
 
-# Installer Nginx, extensions PHP, Supervisor, Composer
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
@@ -35,7 +34,6 @@ COPY ./supervisord.conf /etc/supervisord.conf
 
 RUN chown -R www-data:www-data /var/www/html
 
-# Exposer le port utilisé par Render
 EXPOSE 80
 
 # Lancer Supervisor qui gère php-fpm + nginx
